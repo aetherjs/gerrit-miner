@@ -1,6 +1,10 @@
 # Usage
 
-Firstly, build the project using ./gradlew build or otherwise from your favourite IDE. Navigate to gerrit-miner/ directory and run the following command:
+Firstly, navigate to gerrit-miner/ directory and build the project using: 
+
+    ./gradlew build 
+
+or otherwise from your favourite IDE. After the project is built, run the following command:
 
     ./gradlew run --args='arg1 arg2 arg3'
     
