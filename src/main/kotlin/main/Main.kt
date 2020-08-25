@@ -1,10 +1,11 @@
 package main
 
-import client.loadReviewDiffs
-import client.loadReviewsData
+import client.Client
+
 
 const val testBaseUrl = "https://review.openstack.org"
 
 fun main() {
-    println(loadReviewDiffs(testBaseUrl))
+    val client = Client()
+    println(client.loadReviewDiffs(testBaseUrl))
 }
