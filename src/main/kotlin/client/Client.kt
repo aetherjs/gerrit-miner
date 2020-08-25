@@ -20,9 +20,9 @@ class Client {
         val revisionOptions = "CURRENT_REVISION"
         val filesOptions = "CURRENT_FILES"
 
-        val request = get("$baseUrl/changes/?q=$status&n=$limit&o=$revisionOptions&o=$filesOptions")
-        println("Request URL: ${request.url}")
-        return request.text.substringAfter(")]}'")
+        val response = getResponse("$baseUrl/changes/?q=$status&n=$limit&o=$revisionOptions&o=$filesOptions")
+        println("Request URL: ${response.url}")
+        return response.text.substringAfter(")]}'")
     }
 
     fun loadReviewDiffs(baseUrl: String): String {
@@ -41,9 +41,7 @@ class Client {
                 }
             }
         }
-
         println(diffRequestInfo)
-
         val randomDiffRequest = diffRequestInfo[Random.nextInt(diffRequestInfo.size)]
         val query = "$baseUrl/changes/${randomDiffRequest.changeID}/revisions/${randomDiffRequest.revisionID}/files/${randomDiffRequest.fileID}/diff"
         val response = getResponse(query)
@@ -55,6 +53,7 @@ class Client {
         timeSinceLastRequest = System.currentTimeMillis() - lastRequestTime
         val waitFor = REQUEST_TIMEOUT - timeSinceLastRequest
         if (waitFor > 0) {
+            println("Waiting for $waitFor milliseconds to avoid overload")
             Thread.sleep(waitFor)
         }
         return get(query)
