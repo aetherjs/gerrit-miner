@@ -1,4 +1,4 @@
-package client
+package org.jetbrains.research.gerritminer.client
 
 import khttp.get
 import khttp.responses.Response
