@@ -1,4 +1,4 @@
-package model
+package org.jetbrains.research.gerritminer.model
 
 
 data class Review(

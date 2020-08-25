@@ -1,10 +1,10 @@
-package model
+package org.jetbrains.research.gerritminer.model
 
 import org.json.JSONArray
 import org.json.JSONObject
 
 /**
- * Reads JSON response received by client and parses it into a list of [Review] objects
+ * Reads JSON response received by org.jetbrains.research.gerritminer.client and parses it into a list of [Review] objects
  */
 fun parseReviewsData(response: String): Collection<Review> {
     val reviewsData = mutableListOf<Review>()
@@ -20,8 +20,8 @@ fun parseReviewsData(response: String): Collection<Review> {
             if (reviewers.get(key) is JSONArray) {
                 (reviewers.get(key) as JSONArray).forEach { reviewer ->
                     reviewer as JSONObject
-                    val reviewer = readUserInfo(reviewer)
-                    reviewersList.add(reviewer)
+                    val reviewerInfo = readUserInfo(reviewer)
+                    reviewersList.add(reviewerInfo)
                 }
             }
         }
