@@ -1,17 +1,19 @@
 package model
 
-import java.util.*
-
-data class DiffRequest(val changeID: Int, val revisionID: String, val fileID: String)
-
-data class Approval(val userID: String, val approveValue: Int, val grantDate: Date)
 
 data class Review(
-    val status: String,
-    val approveHistory: List<Approval>,
-    val submitDate: Date,
-    val changeId: String,
+    val legacyId: Int,
+    val id: String,
+    val files: List<String>,
+    val commitInfo: CommitInfo,
+    val reviewers: List<UserInfo>,
+    val author: UserInfo
+)
+
+data class UserInfo(val userID: Int, val username: String, val email: String, val displayName: String)
+
+data class CommitInfo(
+    val commitId: String,
     val project: String,
-    val closeDate: Date,
-    val files: List<String>
+    val branch: String
 )
