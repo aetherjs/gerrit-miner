@@ -12,5 +12,5 @@ fun flushToFile(reviewsData: Collection<Review>, repoName: String) {
     val timeStamp: String = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
     val gson = GsonBuilder().setPrettyPrinting().create()
     val jsonString = gson.toJson(reviewsData)
-    File(projectPath).resolve(outputPath + repoName + timeStamp).writeText(jsonString)
+    File(projectPath).resolve("$outputPath$repoName-$timeStamp.json").writeText(jsonString)
 }

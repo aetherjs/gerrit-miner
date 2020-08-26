@@ -6,9 +6,10 @@ import org.json.JSONObject
 /**
  * Reads JSON response received by org.jetbrains.research.gerritminer.client and parses it into a list of [Review] objects
  */
-fun parseReviewsData(response: String): Collection<Review> {
+fun parseReviewsData(response: String): Pair<Collection<Review>, Boolean> {
     val reviewsData = mutableListOf<Review>()
     val jsonResponse = JSONArray(response)
+    var moreChanges = false
     jsonResponse.forEach { (it as JSONObject)
         val legacyId = it.getInt("_number")
         val stringId = it.getString("id")
@@ -40,8 +41,11 @@ fun parseReviewsData(response: String): Collection<Review> {
         val commitInfo = CommitInfo(commitId, project, branch)
         val review = Review(legacyId, stringId, filePaths, commitInfo, reviewersList, author)
         reviewsData.add(review)
+        if (it.has("_more_changes")) {
+            moreChanges = it.getBoolean("_more_changes")
+        }
     }
-    return reviewsData
+    return Pair(reviewsData, moreChanges)
 }
 
 /**

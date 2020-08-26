@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
     if (args.size == 3) {
         val baseUrl = args[0]
         val repoName = args[1]
-        var limit = 0
+        var limit: Int
         try {
             limit = parseInt(args[2])
         } catch (e: NumberFormatException) {
@@ -19,10 +19,7 @@ fun main(args: Array<String>) {
             return
         }
         val client = Client()
-        val query = client.constructQuery(baseUrl, "merged", limit)
-        val reviewsDataJSON = client.getResponseText(query)
-        val reviewsData = parseReviewsData(reviewsDataJSON)
-        println(reviewsData)
+        val reviewsData = client.loadGerritReviews(baseUrl, "merged", limit)
         flushToFile(reviewsData, repoName)
     } else {
         println("Incorrect number of arguments! \n")
