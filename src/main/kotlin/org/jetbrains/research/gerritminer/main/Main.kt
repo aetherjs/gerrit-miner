@@ -2,7 +2,6 @@ package org.jetbrains.research.gerritminer.main
 
 import org.jetbrains.research.gerritminer.client.Client
 import org.jetbrains.research.gerritminer.model.flushToFile
-import org.jetbrains.research.gerritminer.model.parseReviewsData
 import java.lang.Integer.parseInt
 
 
