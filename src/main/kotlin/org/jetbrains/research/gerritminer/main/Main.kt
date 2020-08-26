@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
     if (args.size == 3) {
         val baseUrl = args[0]
         val repoName = args[1]
-        var limit: Int
+        val limit: Int
         try {
             limit = parseInt(args[2])
         } catch (e: NumberFormatException) {
