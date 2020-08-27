@@ -2,7 +2,11 @@ package org.jetbrains.research.gerritminer.main
 
 import org.jetbrains.research.gerritminer.client.Client
 import org.jetbrains.research.gerritminer.model.flushToFile
+import org.jetbrains.research.gerritminer.model.outputPath
+import java.io.File
 import java.lang.Integer.parseInt
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 
 fun main(args: Array<String>) {
@@ -18,7 +22,12 @@ fun main(args: Array<String>) {
             return
         }
         val client = Client()
+        val rawData = client.getResponseText(client.constructQuery(baseUrl, "merged", limit))
         val reviewsData = client.loadGerritReviews(baseUrl, "merged", limit)
+        println(rawData)
+        val projectPath: String = System.getProperty("user.dir")
+        val timeStamp: String = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+        File(projectPath).resolve("${outputPath}raw-$repoName-$timeStamp.json").writeText(rawData)
         flushToFile(reviewsData, repoName)
     } else {
         println("Incorrect number of arguments! \n")

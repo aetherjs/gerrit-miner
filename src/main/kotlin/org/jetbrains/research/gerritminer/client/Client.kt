@@ -22,12 +22,12 @@ class Client {
                        status: String = "merged",
                        limit: Int = 10,
                        offset: Int = 0,
-                       revisionOptions: String = "CURRENT_REVISION",
-                       commitOptions: String = "CURRENT_COMMIT",
+                       revisionOptions: String = "ALL_REVISIONS",
+                       commitOptions: String = "ALL_COMMITS",
                        filesOptions: String = "CURRENT_FILES",
                        accountsOptions: String = "DETAILED_ACCOUNTS",
                        labelsOptions: String = "DETAILED_LABELS"): String {
-        return  "$baseUrl/changes/?q=$status&S=$offset&n=${limit}&o=$revisionOptions&o=$commitOptions&o=$filesOptions&o=$accountsOptions&o=$labelsOptions"
+        return  "$baseUrl/changes/?q=status:$status&S=$offset&n=${limit}&o=$revisionOptions&o=$commitOptions&o=$filesOptions&o=$accountsOptions&o=$labelsOptions"
     }
 
     /**

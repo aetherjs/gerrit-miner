@@ -32,10 +32,12 @@ fun parseReviewsData(response: String): Pair<Collection<Review>, Boolean> {
         val filePaths = mutableListOf<String>()
         val revisions = it.getJSONObject("revisions")
         revisions.keys().forEach { revisionId ->
-            commitId = revisionId
-            val files = revisions.getJSONObject(revisionId).getJSONObject("files")
-            files.keys().forEach { filePath ->
-                filePaths.add(filePath)
+            if (revisions.getJSONObject(revisionId).has("files")) {
+                commitId = revisionId
+                val files = revisions.getJSONObject(revisionId).getJSONObject("files")
+                files.keys().forEach { filePath ->
+                    filePaths.add(filePath)
+                }
             }
         }
         val commitInfo = CommitInfo(commitId, project, branch)
