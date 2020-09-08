@@ -10,21 +10,23 @@ import java.time.format.DateTimeFormatter
 
 
 fun main(args: Array<String>) {
-    if (args.size == 3) {
+    if (args.size == 4) {
         val baseUrl = args[0]
         val repoName = args[1]
+        val project = args[2]
         val limit: Int
         try {
-            limit = parseInt(args[2])
+            limit = parseInt(args[3])
         } catch (e: NumberFormatException) {
-            println("Second argument must be a number! \n")
+            println("Last argument must be a number! \n")
             printUsageInfo()
             return
         }
         val client = Client()
-        val rawData = client.getResponseText(client.constructQuery(baseUrl, "merged", limit))
-        val reviewsData = client.loadGerritReviews(baseUrl, "merged", limit)
+        val rawData = client.getResponseText(client.constructQuery(baseUrl, project,  "merged", limit))
         println(rawData)
+        val reviewsData = client.loadGerritReviews(baseUrl, project,  "merged", limit)
+        reviewsData.sortedBy { it.timestamp }
         val projectPath: String = System.getProperty("user.dir")
         val timeStamp: String = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
         File(projectPath).resolve("${outputPath}raw-$repoName-$timeStamp.json").writeText(rawData)
@@ -36,5 +38,5 @@ fun main(args: Array<String>) {
 }
 
 fun printUsageInfo() {
-    println("Usage: ./gradlew run --args='arg1 arg2 arg3' \nWhere arg1 - baseUrl (for instance: https://review.opendev.org), arg2 - project codename for saving results (i.e. opendev) and arg3 is the number of review to mine")
+    println("Usage: ./gradlew run --args='arg1 arg2 arg3 arg4' \nWhere arg1 - baseUrl (for instance: https://review.opendev.org), arg2 - project codename for saving results (i.e. opendev), arg3 is a specific project for which reviews should be mined and arg4 is the number of review to mine")
 }

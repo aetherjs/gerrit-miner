@@ -19,6 +19,7 @@ class Client {
      * Constructs a Gerrit API query from base url and optional parameters
      */
     fun constructQuery(baseUrl: String,
+                       projectOption: String,
                        status: String = "merged",
                        limit: Int = 10,
                        offset: Int = 0,
@@ -27,7 +28,7 @@ class Client {
                        filesOptions: String = "CURRENT_FILES",
                        accountsOptions: String = "DETAILED_ACCOUNTS",
                        labelsOptions: String = "DETAILED_LABELS"): String {
-        return  "$baseUrl/changes/?q=status:$status&S=$offset&n=${limit}&o=$revisionOptions&o=$commitOptions&o=$filesOptions&o=$accountsOptions&o=$labelsOptions"
+        return  "$baseUrl/changes/?q=status:$status+project:$projectOption&S=$offset&n=${limit}&o=$revisionOptions&o=$commitOptions&o=$filesOptions&o=$accountsOptions&o=$labelsOptions"
     }
 
     /**
@@ -51,12 +52,12 @@ class Client {
         return response.text.substringAfter(")]}'")
     }
 
-    fun loadGerritReviews(baseUrl: String, status: String, limit: Int): List<Review> {
+    fun loadGerritReviews(baseUrl: String, project: String, status: String, limit: Int): List<Review> {
         val reviewsData = mutableListOf<Review>()
         var offset = 0
         var limitNotReached = true
         while (limitNotReached) {
-            val query = constructQuery(baseUrl, status, limit, offset)
+            val query = constructQuery(baseUrl, project, status, limit, offset)
             val reviewsDataJSON = getResponseText(query)
             reviewsData.addAll(parseReviewsData(reviewsDataJSON).first)
             offset += parseReviewsData(reviewsDataJSON).first.size

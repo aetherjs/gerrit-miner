@@ -2,15 +2,18 @@ package org.jetbrains.research.gerritminer.model
 
 import org.json.JSONArray
 import org.json.JSONObject
+import java.sql.Timestamp
 
 /**
  * Reads JSON response received by org.jetbrains.research.gerritminer.client and parses it into a list of [Review] objects
  */
 fun parseReviewsData(response: String): Pair<Collection<Review>, Boolean> {
     val reviewsData = mutableListOf<Review>()
+    println(response)
     val jsonResponse = JSONArray(response)
     var moreChanges = false
     jsonResponse.forEach { (it as JSONObject)
+        val timestamp = Timestamp.valueOf(it.getString("submitted"))
         val legacyId = it.getInt("_number")
         val stringId = it.getString("id")
         val owner = it.getJSONObject("owner")
@@ -22,12 +25,14 @@ fun parseReviewsData(response: String): Pair<Collection<Review>, Boolean> {
                 (reviewers.get(key) as JSONArray).forEach { reviewer ->
                     reviewer as JSONObject
                     val reviewerInfo = readUserInfo(reviewer)
-                    reviewersList.add(reviewerInfo)
+                    if (reviewerInfo.email != "null" && !reviewerInfo.displayName.contains("CI")) {
+                        reviewersList.add(reviewerInfo)
+                    }
                 }
             }
         }
-        val project = it.getString("project")
         val branch = it.getString("branch")
+        val project = it.getString("project")
         var commitId = "n/a"
         val filePaths = mutableListOf<String>()
         val revisions = it.getJSONObject("revisions")
@@ -41,7 +46,7 @@ fun parseReviewsData(response: String): Pair<Collection<Review>, Boolean> {
             }
         }
         val commitInfo = CommitInfo(commitId, project, branch)
-        val review = Review(legacyId, stringId, filePaths, commitInfo, reviewersList, author)
+        val review = Review(legacyId, stringId, filePaths, commitInfo, reviewersList, author, timestamp)
         reviewsData.add(review)
         if (it.has("_more_changes")) {
             moreChanges = it.getBoolean("_more_changes")
