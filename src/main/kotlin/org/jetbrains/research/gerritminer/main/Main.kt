@@ -30,6 +30,7 @@ fun main(args: Array<String>) {
         val projectPath: String = System.getProperty("user.dir")
         val timeStamp: String = DateTimeFormatter.ISO_INSTANT.format(Instant.now())
         File(projectPath).resolve("${outputPath}raw-$repoName-$timeStamp.json").writeText(rawData)
+        println("Total Entries: ${reviewsData.size}")
         flushToFile(reviewsData, repoName)
     } else {
         println("Incorrect number of arguments! \n")
@@ -40,3 +41,4 @@ fun main(args: Array<String>) {
 fun printUsageInfo() {
     println("Usage: ./gradlew run --args='arg1 arg2 arg3 arg4' \nWhere arg1 - baseUrl (for instance: https://review.opendev.org), arg2 - project codename for saving results (i.e. opendev), arg3 is a specific project for which reviews should be mined and arg4 is the number of review to mine")
 }
+
