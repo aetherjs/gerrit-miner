@@ -8,7 +8,7 @@ import org.jetbrains.research.gerritminer.model.parseReviewsData
 /**
  * API burst limit
  */
-const val REQUEST_TIMEOUT = 500L
+const val REQUEST_TIMEOUT = 1000L
 
 class Client {
 
@@ -65,6 +65,8 @@ class Client {
         }
         return reviewsData
     }
+
+
 
 }
 
