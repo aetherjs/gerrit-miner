@@ -13,7 +13,7 @@ fun parseReviewsData(response: String): Pair<Collection<Review>, Boolean> {
     val jsonResponse = JSONArray(response)
     var moreChanges = false
     jsonResponse.forEach { (it as JSONObject)
-        val timestamp = Timestamp.valueOf(it.getString("submitted"))
+        val timestamp = Timestamp.valueOf(it.getString("created"))
         val legacyId = it.getInt("_number")
         val stringId = it.getString("id")
         val owner = it.getJSONObject("owner")
@@ -25,7 +25,10 @@ fun parseReviewsData(response: String): Pair<Collection<Review>, Boolean> {
                 (reviewers.get(key) as JSONArray).forEach { reviewer ->
                     reviewer as JSONObject
                     val reviewerInfo = readUserInfo(reviewer)
-                    if (reviewerInfo.email != "null" && !reviewerInfo.displayName.contains("CI")) {
+                    if (reviewerInfo.email != "null" &&
+                            !reviewerInfo.displayName.contains("CI") &&
+                            !reviewerInfo.displayName.contains("Bot") &&
+                            reviewerInfo != author) {
                         reviewersList.add(reviewerInfo)
                     }
                 }
@@ -46,8 +49,10 @@ fun parseReviewsData(response: String): Pair<Collection<Review>, Boolean> {
             }
         }
         val commitInfo = CommitInfo(commitId, project, branch)
-        val review = Review(legacyId, stringId, filePaths, commitInfo, reviewersList, author, timestamp)
-        reviewsData.add(review)
+        if (reviewersList.isNotEmpty()) {
+            val review = Review(legacyId, stringId, filePaths, commitInfo, reviewersList, author, timestamp)
+            reviewsData.add(review)
+        }
         if (it.has("_more_changes")) {
             moreChanges = it.getBoolean("_more_changes")
         }
